@@ -79,7 +79,7 @@ const authOptions : NextAuthOptions = {
         signIn:"/login"
     },
     secret:process.env.NEXT_PUBLIC_AUTH_SECRET,
-    debug:process.env.NODE_ENV === "development"
+    debug:process.env.NODE_ENV === "production"
 }
 
 export default authOptions;
