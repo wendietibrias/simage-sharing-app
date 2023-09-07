@@ -64,20 +64,22 @@ const Navbar = () => {
                   {session?.user?.email}
                 </p>
               </header>
-              <ul className="sm:flex sm:flex-col sm:items-start  sm:gap-y-2 sm:mt-3 2xl:hidden">
-                {navbarlink.map(
-                  (item: { title: string; path: string }, idx: number) => (
-                    <li key={idx}>
-                      <Link
-                        className="text-[13px] font-semibold text-gray-500"
-                        href={item.path}
-                      >
-                        {item.title}
-                      </Link>
-                    </li>
-                  )
-                )}
-              </ul>
+              {status === "authenticated" && (
+                <ul className="sm:flex sm:flex-col sm:items-start  sm:gap-y-2 sm:mt-3 2xl:hidden">
+                  {navbarlink.map(
+                    (item: { title: string; path: string }, idx: number) => (
+                      <li key={idx}>
+                        <Link
+                          className="text-[13px] font-semibold text-gray-500"
+                          href={item.path}
+                        >
+                          {item.title}
+                        </Link>
+                      </li>
+                    )
+                  )}
+                </ul>
+              )}
               <div className="mt-3 sm:mt-5">
                 <button
                   onClick={() => signOut({ redirect: true, callbackUrl: "/" })}
