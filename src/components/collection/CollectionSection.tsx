@@ -6,14 +6,21 @@ import { useQuery, useInfiniteQuery } from "react-query";
 import LoadingSpinner from "../LoadingSpinner";
 import CollectionImageCard from "./CollectionImageCard";
 import { IImagePromiseResponse } from "@/interfaces/imageResponse.interface";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 const CollectionSection = () => {
+  const { data: session, status } = useSession();
   const { isLoading, data, isFetching, hasNextPage } = useInfiniteQuery({
     queryKey: "user-collection",
     queryFn: ({ pageParam = 1 }) => getUserImageCollections(pageParam),
     getNextPageParam: (nextParam) => nextParam.nextPage,
     staleTime: 0,
   });
+
+  if (status === "unauthenticated") {
+    return redirect("/");
+  }
 
   if (isLoading && isFetching) {
     return (

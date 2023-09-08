@@ -1,10 +1,10 @@
 "use client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { useAlertType } from "@/hooks/useAlert";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import LoadingSpinner from "../LoadingSpinner";
 import useAlert from "@/hooks/useAlert";
 import Link from "next/link";
@@ -19,7 +19,7 @@ type FormValues = {
 
 const LoginForm = () => {
   const router = useRouter();
-
+  const { status, data: session } = useSession();
   const { open, openAlert, closeAlert } = useAlert(
     (state) => state
   ) as useAlertType;
@@ -61,6 +61,10 @@ const LoginForm = () => {
       }, 3400);
     }
   };
+
+  if (status === "authenticated") {
+    return redirect("/");
+  }
 
   return (
     <form

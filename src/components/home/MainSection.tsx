@@ -13,14 +13,19 @@ const MainSection = (): React.ReactNode => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const debouncedSearch = useDebounce(searchTerm, 1500);
 
-  const { isLoading, data, isError, hasNextPage, fetchNextPage } =
-    useInfiniteQuery({
-      queryKey: ["images-user", { debouncedSearch }],
-      queryFn: ({ pageParam = 1 }) =>
-        getAllImageCommunity(pageParam, searchTerm),
-      getNextPageParam: (prevData) => prevData.nextPage,
-      staleTime: 60 * 60 * 1000,
-    });
+  const {
+    isLoading,
+    isFetchingNextPage,
+    data,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["images-user", { debouncedSearch }],
+    queryFn: ({ pageParam = 1 }) => getAllImageCommunity(pageParam, searchTerm),
+    getNextPageParam: (prevData) => prevData.nextPage,
+    staleTime: 60 * 60 * 1000,
+  });
 
   if (isLoading) {
     return (
@@ -60,6 +65,11 @@ const MainSection = (): React.ReactNode => {
           </Masonry>
         </ResponsiveMasonry>
       </div>
+      {isFetchingNextPage && (
+        <div className="flex justify-center items-center">
+          <LoadingSpinner width={24} height={24} color="#6366f1" />
+        </div>
+      )}
       <div className="flex justify-center items-center">
         {hasNextPage ? (
           <button

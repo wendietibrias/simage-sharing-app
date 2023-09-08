@@ -14,6 +14,7 @@ import Input from "../Input";
 import ButtonForm from "../ButtonForm";
 import LoadingSpinner from "../LoadingSpinner";
 import Alert from "../Alert";
+import formatimage from "@/constants/formatimage";
 
 export type ImageFormValues = {
   name: string;
@@ -68,6 +69,20 @@ const CreateImageForm = () => {
 
   const imageUploadHandler = (result: any) => {
     if (result.event === "success") {
+      if (result.info.bytes > 1000000) {
+        return toast.error("Image is to big", {
+          position: "top-center",
+          duration: 3000,
+        });
+      }
+
+      if (!formatimage.includes(result.info.format)) {
+        return toast.error("Invalid image type", {
+          position: "top-center",
+          duration: 3000,
+        });
+      }
+
       setImage({
         url: result.info.secure_url,
         publicId: result.info.public_id,

@@ -3,7 +3,7 @@ import { useMutation } from "react-query";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { useAlertType } from "@/hooks/useAlert";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
 import useAlert from "@/hooks/useAlert";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import Input from "../Input";
 import ButtonForm from "../ButtonForm";
 import Alert from "../Alert";
 import LoadingSpinner from "../LoadingSpinner";
+import { useSession } from "next-auth/react";
 
 type FormValues = {
   name: string;
@@ -20,6 +21,7 @@ type FormValues = {
 };
 
 const RegisterForm = () => {
+  const { status, data: session } = useSession();
   const { open, closeAlert, openAlert } = useAlert(
     (state) => state
   ) as useAlertType;
@@ -67,6 +69,10 @@ const RegisterForm = () => {
 
   const submitHandler: SubmitHandler<FormValues> = async (formData) =>
     registerMutation.mutate(formData);
+
+  if (status === "authenticated") {
+    return redirect("/");
+  }
 
   return (
     <form
