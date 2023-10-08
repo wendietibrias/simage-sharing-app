@@ -19,6 +19,7 @@ const MainSection = (): React.ReactNode => {
     data,
     isError,
     hasNextPage,
+    isFetching,
     fetchNextPage,
   } = useInfiniteQuery({
     queryKey: ["images-user", { debouncedSearch }],
@@ -27,7 +28,7 @@ const MainSection = (): React.ReactNode => {
     staleTime: 60 * 60 * 1000,
   });
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="w-full mt-10 flex justify-center items-center">
         <LoadingSpinner width={26} height={26} color="#6366f1" />
@@ -53,17 +54,23 @@ const MainSection = (): React.ReactNode => {
         <AiOutlineSearch className="text-lg text-gray-500 absolute right-5 top-3"></AiOutlineSearch>
       </div>
       <div className="mt-10">
-        <ResponsiveMasonry
-          columnsCountBreakPoints={{ 350: 1, 560: 2, 750: 2, 900: 3 }}
-        >
-          <Masonry>
-            {data?.pages
-              .flatMap((item) => item.data)
-              .map((item, idx) => (
-                <ImageCard item={item} key={idx} />
-              ))}
-          </Masonry>
-        </ResponsiveMasonry>
+        {data && data?.pages?.flatMap((page) => page.data).length < 1 ? (
+          <p className="text-center font-semibold text-gray-500 text-lg">
+            No results
+          </p>
+        ) : (
+          <ResponsiveMasonry
+            columnsCountBreakPoints={{ 350: 1, 560: 2, 750: 2, 900: 3 }}
+          >
+            <Masonry>
+              {data?.pages
+                .flatMap((item) => item.data)
+                .map((item, idx) => (
+                  <ImageCard item={item} key={idx} />
+                ))}
+            </Masonry>
+          </ResponsiveMasonry>
+        )}
       </div>
       {isFetchingNextPage && (
         <div className="flex justify-center items-center">
